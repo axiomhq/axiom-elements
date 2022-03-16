@@ -95,3 +95,10 @@ function MyCharts({ children }) {
 
 export default MyCharts;
 ```
+
+
+### More Docs and Examples
+
+Checkout this repository and run Storybook to explore the docs and example use cases.
+
+See CONTRIBUTING.md for details on running Storybook
