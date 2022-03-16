@@ -1,6 +1,6 @@
 # axiom-elements
 
-Axiom Elements is a set of React components that can displaying charts for your Axiom Datasets.
+Axiom Elements is a set of React components that can display charts for your Axiom Datasets.
 
 https://www.axiom.co/
 
