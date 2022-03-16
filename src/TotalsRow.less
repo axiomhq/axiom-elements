@@ -1,0 +1,48 @@
+@import './styles/theme.less';
+@import './styles/mixins.less';
+
+.row {
+  border-bottom: 1px solid @borders-default;
+  font-family: @mono-font-family;
+  font-size: @text-size-sm;
+  letter-spacing: @mono-font-spacing;
+
+  &:nth-child(odd) {
+    // We fade this so the scroll shadow on the table can come through
+    background-color: fade(@backgrounds-darker, 15%);
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background-color: @backgrounds-blue;
+  }
+
+  > td {
+    padding: @space-2 @space-2;
+    white-space: nowrap;
+    border-right: 1px solid @borders-default;
+
+    &:last-child {
+      border-right: none;
+    }
+  }
+}
+
+.group {
+  .ellipsize();
+  max-width: 40ch;
+}
+
+.end-group.end-group {
+  border-right-width: 4px;
+}
+
+.topk-key {
+  .ellipsize();
+  max-width: 40ch;
+  display: inline-block;
+  vertical-align: bottom;
+}

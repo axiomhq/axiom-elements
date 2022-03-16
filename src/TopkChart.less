@@ -1,0 +1,213 @@
+@import './styles/theme.less';
+@import './styles/mixins.less';
+
+.chart {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  max-width: 100%;
+  overflow-y: auto;
+  padding: 0 10px;
+
+  // Add shadow to the top and bottom when there is an overflow to indicate to the user that they should scroll
+  background: linear-gradient(180deg, white 0%, rgba(255, 255, 255, 0)),
+    linear-gradient(0deg, white 0%, rgba(255, 255, 255, 0)) 0% 100%,
+    radial-gradient(farthest-side at 50% 0%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)),
+    radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) 0% 100%;
+  background-repeat: no-repeat;
+  background-color: #fff;
+  background-size: 100% 100px, 100% 100px, 100% 14px, 100% 14px;
+  background-attachment: local, local, scroll, scroll;
+  background-color: @backgrounds-white;
+  border-radius: @borders-radius;
+}
+
+.title {
+  .ellipsize();
+  font-size: @text-size-xs;
+  font-weight: @bold;
+  text-align: left;
+  color: @text-dark;
+  margin-bottom: @space-3;
+  margin-top: 5px; // Try to match the extra whitespace in the chart Title that UPlot based charts have.
+}
+
+.empty-msg {
+  position: absolute;
+  top: 50%;
+  display: inline-block;
+  left: 50%;
+  transform: translate(-50%);
+  font-family: @mono-font-family;
+  font-size: 11px;
+  text-align: center;
+}
+
+.table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  width: 100%;
+  font-family: @mono-font-family;
+  font-size: 11px;
+  line-height: 1.5;
+
+  td {
+    padding: 0;
+
+    // borders
+    border-top: 1px solid @borders-default;
+    border-bottom: 1px solid @borders-default;
+
+    &:not(:first-child) {
+      border-left: 1px solid @borders-default;
+    }
+  }
+
+  th {
+    padding: @space-1 @space-2;
+    font-weight: @medium;
+  }
+
+  tr:hover {
+    td {
+      background-color: @backgrounds-blue;
+
+      .key:after,
+      .group:after {
+        right: 50px; // Leave room for copy button
+      }
+    }
+
+    .copy {
+      visibility: visible;
+    }
+  }
+}
+
+.count {
+  position: relative;
+  height: 100%;
+}
+
+.value {
+  position: relative;
+  z-index: 1; // Place above bar
+}
+
+.bar {
+  position: absolute;
+  height: 100%;
+  top: 0;
+  left: 0;
+
+  &::before {
+    content: '';
+  }
+}
+
+.value {
+  padding: @space-1 @space-2;
+}
+
+.group-cell.group-cell {
+  padding: @space-2;
+}
+
+// Group rows after the first one have a wide top border
+tr:not(:first-child) .group-cell {
+  border-top: 4px solid @borders-muted;
+}
+
+.key-cell.key-cell {
+  padding: 0 @space-2;
+}
+
+.group {
+  font-weight: @bold;
+}
+
+// Modified from ColorTableRow.less to work here with different font-size and spacing
+// Hack to ellipsize column that would otherwise wrap
+// https://stackoverflow.com/a/44452722/346259
+.group,
+.key,
+.field {
+  max-height: 18px;
+  overflow: hidden;
+  position: relative;
+  color: transparent;
+
+  &:after {
+    content: attr(data-title);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    color: @text-default;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+}
+
+// wrapper so we can position the copy button
+.copy-wrapper {
+  position: relative;
+}
+
+.copy {
+  visibility: hidden;
+  position: absolute;
+  // Center the button in the row
+  right: 2px;
+  top: 0px;
+  transition-duration: 0s; // So that the button isn't fading out with the text showing beneath it
+
+  //////////////////////////////////////////////////////////
+  // `Button` styles from `axiom` proper
+  // (grouped by class in `axiom` proper)
+  margin: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  line-height: 1;
+  text-align: center;
+  // transition: all 200ms linear;
+  vertical-align: middle;
+
+  font-size: 12px;
+  min-height: 18px;
+  padding: 2px 6px;
+  text-transform: uppercase;
+  color: @blue-base;
+  background: transparent;
+  border: 1px solid transparent;
+
+  &:hover {
+    background: #c5ddf3;
+    border: 1px solid #c5ddf3;
+    text-decoration: none;
+  }
+}
+
+.against-header {
+  &:before {
+    content: '';
+    display: block;
+    background: url('/static/media/history.svg') no-repeat;
+    width: 12px;
+    height: 12px;
+    float: left;
+    margin-top: 2px;
+    margin-right: 6px;
+  }
+}
+
+.against-cell {
+  background-color: @backgrounds-default;
+}

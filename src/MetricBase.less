@@ -1,0 +1,131 @@
+// cSpell:ignore yaxistooltip
+@import './styles/theme.less';
+
+.root {
+  color: #6a6b7f;
+  font-size: 13px;
+
+  border-radius: @borders-radius;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  // max-height: 210px;
+  position: relative;
+  text-align: center;
+}
+
+.dimmed {
+  opacity: @dimmed-opacity;
+}
+
+.root-header-adjust {
+  padding-bottom: 40px; // Match the height of ChartHeader.
+}
+
+.chart {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+
+  // Border radiuses all the way down.
+  canvas,
+  div {
+    border-bottom-left-radius: @borders-radius;
+    border-bottom-right-radius: @borders-radius;
+  }
+}
+
+.icon {
+  color: rgba(0, 0, 0, 0.3);
+  position: absolute;
+  left: 10px;
+  top: 0;
+}
+
+.label {
+  user-select: none;
+  width: 100%;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.textOuter {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  // react-tailor isn't great at keeping within bounds of 100% width.
+  width: 90%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.textInner {
+  display: flex;
+  align-items: center;
+  flex: 1;
+
+  font-size: 72px;
+  // Hopefully no longer needed 🤞️
+  // padding: 10px;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  > span {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.themeTextBlue {
+  color: @text-blue;
+}
+
+.themeTextGreen {
+  color: @text-green;
+}
+
+.themeTextOrange {
+  color: @text-orange;
+}
+
+.themeTextPurple {
+  color: @text-purple;
+}
+
+.themeTextRed {
+  color: @text-red;
+}
+
+.themeTextTeal {
+  color: @text-teal;
+}
+
+.themeBackgroundBlue {
+  background: linear-gradient(222.94deg, #f68798 -37.11%, #497fab 105.48%);
+}
+
+.themeBackgroundGreen {
+  background: linear-gradient(206.68deg, #497fab -31.28%, #fbf08e 169.06%);
+}
+
+.themeBackgroundOrange {
+  background: linear-gradient(203.54deg, #497fab -53.59%, #db94ad 47.48%, #fbf08e 133.6%);
+}
+
+.themeBackgroundPurple {
+  background: linear-gradient(203.97deg, #e96143 -11.32%, #e7d535 112.15%, #95c960 149.92%);
+}
+
+.themeBackgroundRed {
+  background: linear-gradient(208.37deg, #f57286 -34.16%, #a786ef 7.25%, #90c7f1 56.95%, #bbe195 102.12%);
+}
+
+.themeBackgroundTeal {
+  background: linear-gradient(209.21deg, #72f59f -45.58%, #6090c9 41.25%, #6540b3 127.13%);
+}

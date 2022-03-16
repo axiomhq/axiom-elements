@@ -1,0 +1,38 @@
+// cSpell:ignore Csvg
+.values {
+  display: flex;
+  flex-direction: row-reverse; // Order the values with older ones first
+  justify-content: space-between;
+
+  & > *:nth-child(n + 2) {
+    // De-emphasize the value for the against query timerange
+    opacity: 0.65;
+    text-align: left;
+
+    // Add an icon to signify what it is
+    &:before {
+      content: '';
+      display: block;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M31.5 15.97c.016 8.54-6.949 15.524-15.489 15.53-4 .003-7.648-1.51-10.4-3.996a.75.75 0 01-.027-1.088l1.06-1.06a.753.753 0 011.034-.025A12.456 12.456 0 0016 28.5c6.91 0 12.5-5.592 12.5-12.5 0-6.91-5.592-12.5-12.5-12.5-3.47 0-6.607 1.41-8.87 3.69l3.068 3.026a.75.75 0 01-.527 1.284h-8.02a.75.75 0 01-.75-.75V2.84a.75.75 0 011.276-.534l2.819 2.78A15.45 15.45 0 0116 .5c8.55 0 15.484 6.924 15.5 15.47zm-10.441 5.637l.882-1.213a.75.75 0 00-.165-1.048l-4.276-3.11V7.25a.75.75 0 00-.75-.75h-1.5a.75.75 0 00-.75.75v10.514l5.511 4.008a.75.75 0 001.048-.165z' fill='%2366788A'/%3E%3C/svg%3E") no-repeat;
+      width: 12px;
+      height: 12px;
+      float: left;
+      margin-top: 4px;
+      margin-right: 6px;
+    }
+  }
+
+  & > * {
+    flex-basis: 45%;
+    text-align: right;
+  }
+
+  & > *:only-child {
+    flex-basis: 100%;
+  }
+
+  & > * + * {
+    // Prevent the values from touching
+    margin-right: 32px;
+  }
+}

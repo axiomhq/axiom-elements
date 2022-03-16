@@ -1,0 +1,27 @@
+@import './styles/theme.less';
+@import './styles/mixins.less';
+
+.root {
+  font-size: 14px; // Not really sure what to set this to. Seems like it was using Tailor previously and was dynamic.
+  height: 36px;
+  line-height: 36px;
+  position: relative;
+  text-align: center;
+  width: 100%; // Save some code if the parent is `display: flex`.
+  color: @text-dark;
+  padding: 0 38px; // Make room for spinner on left and menu button on right.
+  border-top-left-radius: @borders-radius;
+  border-top-right-radius: @borders-radius;
+}
+
+.loading {
+  transform: scale(0.25);
+  position: absolute;
+  // Absolute positioning is affected by the scale transform.
+  left: -20px;
+  top: -20px;
+}
+
+.children {
+  .ellipsize();
+}

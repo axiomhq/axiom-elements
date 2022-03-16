@@ -1,0 +1,43 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules/
+
+# dotenv environment variables file
+.env
+.env.test
+
+# Optional eslint cache
+.eslintcache
+
+# next.js build output
+.next
+
+# Optional REPL history
+.node_repl_history
+
+# Serverless directories
+.serverless/
+
+# TypeScript cache
+*.tsbuildinfo
+dist/
+
+# Webpack
+.cache-loader
+stats.json
+webpack.stamp
+
+# Project
+lib/
+
+types/

@@ -1,0 +1,279 @@
+// cSpell:ignore keyframe nopointer
+
+// 🐉🐉🐉
+// 🐉🐉🐉
+// 🐉🐉🐉
+// 🐉🐉🐉
+// 🐉🐉🐉
+// 🐉🐉🐉
+// 🐉🐉🐉
+// 🐉🐉🐉
+// 🐉🐉🐉
+// 🐉🐉🐉
+// 🐉🐉🐉
+// 🐉🐉🐉
+// 🐉🐉🐉
+// 🐉🐉🐉
+// 🐉🐉🐉
+// 🐉🐉🐉
+// 🐉🐉🐉
+// 🐉🐉🐉
+// 🐉🐉🐉
+// 🐉🐉🐉
+// DON'T PUT ANY CLASSES IN THIS FILE.
+// MIXINS ONLY!!!
+// Classes in  here will be duplicated in every .less file that imports mixins.less
+
+@import './styles/theme.less';
+
+.animated(@duration:200ms; @count:1; @timing:linear) {
+  animation-duration: @duration;
+  animation-fill-mode: both;
+  animation-iteration-count: @count;
+  animation-timing-function: @timing;
+}
+
+.disabled() {
+  cursor: not-allowed;
+  opacity: @disabled-opacity;
+}
+
+.disabled-no-pointer() {
+  cursor: not-allowed;
+  opacity: @disabled-opacity;
+  pointer-events: none;
+}
+
+.ellipsize() {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fix-outline() {
+  // make room for outline on focus elements
+  padding-left: 5px;
+  margin-left: -5px;
+  padding-right: 5px;
+  margin-right: -5px;
+}
+
+// Use a box-shadow instead of outline so we can better control the style across browsers.
+.focus-style() {
+  box-shadow: @focus-box-shadow;
+}
+.focus-style-inset() {
+  box-shadow: @focus-box-shadow-inset;
+}
+
+// Text Styles
+.text-normal() {
+  font-size: @text-size-md;
+  font-weight: @regular;
+  line-height: 25px;
+}
+.text-largest() {
+  font-size: @text-size-xxl;
+  font-weight: @regular;
+  line-height: 25px;
+}
+.text-small() {
+  font-size: @text-size-sm;
+  font-weight: @regular;
+}
+.text-smallest() {
+  font-size: @text-size-xs;
+  font-weight: @regular;
+}
+.text-medium() {
+  font-size: @text-size-md;
+  font-weight: @medium;
+}
+.text-medium-large() {
+  font-size: @text-size-xl;
+  font-weight: @medium;
+  line-height: 25px;
+}
+.text-medium-largest() {
+  font-size: @text-size-xxl;
+  font-weight: @medium;
+  line-height: 25px;
+}
+.text-medium-small() {
+  font-size: @text-size-sm;
+  font-weight: @medium;
+}
+.text-medium-smallest() {
+  font-size: @text-size-xs;
+  font-weight: @medium;
+}
+.text-mono-normal() {
+  font-family: @mono-font-family;
+  font-size: @text-size-md;
+  font-weight: @regular;
+}
+.text-mono-small() {
+  font-family: @mono-font-family;
+  font-size: @text-size-sm;
+  font-weight: @regular;
+}
+.text-large() {
+  font-size: @text-size-xl;
+  font-weight: @regular;
+}
+.headers-master-h3() {
+  font-size: @text-size-xs;
+  font-weight: @bold;
+  text-transform: uppercase;
+}
+.headers-detail-h3() {
+  font-size: @text-size-xs;
+  font-weight: @medium;
+  text-transform: uppercase;
+}
+.headers-detail-h4() {
+  font-size: @text-size-xs;
+  font-weight: @regular;
+  text-transform: uppercase;
+}
+
+// Input styles
+.input() {
+  border: 1px solid @borders-dark;
+  border-radius: 4px;
+  color: @text-default;
+  font-weight: @regular;
+
+  &:focus {
+    border-color: @blue-base;
+  }
+
+  &:disabled {
+    .disabled();
+  }
+
+  &::placeholder {
+    color: @icon-muted;
+    font-style: italic;
+  }
+}
+
+.input-size-default() {
+  font-size: @text-size-md;
+  line-height: 18px;
+  padding: 6px @space-2;
+}
+
+// Summary styles
+
+.summary() {
+  background-color: #ffffff;
+  border-radius: @summary-border-radius;
+  padding: @summary-padding;
+}
+
+.summary-interactive() {
+  .summary();
+
+  transition: box-shadow 0.2s ease-in-out;
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0);
+
+  &:hover {
+    box-shadow: 0px 8px 12px rgba(127, 140, 160, 0.1);
+  }
+}
+
+// Button styles
+.button-color(@color; @background: #ffffff; @border: @background) {
+  color: @color;
+  background: @background;
+  border: 1px solid @border;
+
+  &.disabled,
+  &[disabled] {
+    &,
+    &:hover,
+    &:focus,
+    &:active,
+    &:global(.active) {
+      .disabled();
+      text-decoration: none;
+    }
+  }
+}
+.button-variant(@color; @background: #ffffff; @border: @background; @hover-background: darken(@background, 8%); @active-background: darken(@background, 16%)) {
+  .button-color(@color, @background, @border);
+
+  &:hover:not(.disabled) {
+    background: @hover-background;
+    border: 1px solid darken(@border, 8%);
+    text-decoration: none;
+  }
+
+  &:active:not(.disabled) {
+    background: @active-background;
+    border: 1px solid darken(@border, 16%);
+  }
+}
+
+//////////////////////////////////////
+// motion.less from Ant Design
+// https://github.com/ant-design/ant-design/blob/9838fc58434956982eb021014053fa410ae36c3d/components/style/mixins/motion.less
+//
+
+.motion-common(@duration: @animation-duration-base) {
+  animation-duration: @duration;
+  animation-fill-mode: both;
+}
+
+.motion-common-leave(@duration: @animation-duration-base) {
+  animation-duration: @duration;
+  animation-fill-mode: both;
+}
+
+.make-motion(@className, @keyframeName, @duration: @animation-duration-base) {
+  .@{className}-enter,
+  .@{className}-appear {
+    .motion-common(@duration);
+
+    animation-play-state: paused;
+  }
+  .@{className}-leave {
+    .motion-common-leave(@duration);
+
+    animation-play-state: paused;
+  }
+  .@{className}-enter.@{className}-enter-active,
+  .@{className}-appear.@{className}-appear-active {
+    animation-name: ~'@{keyframeName}In';
+    animation-play-state: running;
+  }
+  .@{className}-leave.@{className}-leave-active {
+    animation-name: ~'@{keyframeName}Out';
+    animation-play-state: running;
+    pointer-events: none;
+  }
+}
+
+//
+//////////////////////////////////////
+
+.word-break() {
+  overflow-wrap: break-word;
+}
+
+.wrapping-cell() {
+  min-width: 75px;
+  position: relative; // For the no-wrap hack.
+  width: auto; // Override RawDataCell's width
+  word-break: break-word;
+}
+
+.no-wrapping-cell() {
+  & > span {
+    .ellipsize();
+    position: absolute;
+    left: @space-1;
+    right: @space-1;
+  }
+}

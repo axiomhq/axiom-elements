@@ -1,0 +1,5 @@
+# Exclude type definitions.
+*.d.ts
+
+# Include the rolled up type definition.
+!index.d.ts

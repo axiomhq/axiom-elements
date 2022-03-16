@@ -1,0 +1,61 @@
+@import './styles/theme.less';
+
+.color-row {
+  color: @neutral-base;
+  font-weight: @regular;
+  // Removed background-color so that the shadows that indicate scrolling can be seen
+  // See ChartTooltip.less
+  // background-color: #ffffff;
+}
+
+.color {
+  width: 16px;
+  border-right: 8px solid #ffffff;
+  margin-top: 1px;
+}
+
+.inactive {
+  opacity: 0.5;
+}
+
+.active {
+  color: @neutral-dark;
+  font-weight: @bold;
+  background-color: @backgrounds-base;
+
+  & .color {
+    opacity: 1;
+    border-right-color: @backgrounds-base;
+  }
+}
+
+.value {
+  padding-left: @space-3;
+}
+
+.series-name {
+  white-space: pre-wrap;
+  word-break: break-all;
+  word-wrap: break-word;
+}
+
+// Hack to ellipsize column that would otherwise wrap
+// https://stackoverflow.com/a/44452722/346259
+.one-line {
+  max-height: 1.5em; // Used a max-height that vertically aligns the text and doesn't cut off letters
+  overflow: hidden;
+  position: relative;
+  color: transparent;
+
+  &:after {
+    content: attr(data-title);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    color: black;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+}

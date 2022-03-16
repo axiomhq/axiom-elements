@@ -1,0 +1,66 @@
+{
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/._.DS_Store": true,
+    "node_modules": true,
+    // "dist": true,
+    ".cache-loader": true,
+    "demo": true, // this is its own project and it's recommended to open in a separate editor
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.formatDocument": true,
+    "source.fixAll.eslint": true
+  },
+  "[css]": {
+    "editor.formatOnSave": true
+  },
+  "[javascript]": {
+    "editor.formatOnSave": true
+  },
+  "[json]": {
+    "editor.formatOnSave": true
+  },
+  "[jsonc]": {
+    "editor.formatOnSave": true
+  },
+  "[typescript]": {
+    "editor.formatOnSave": true
+  },
+  "[typescriptreact]": {
+    "editor.formatOnSave": true
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  // Specify paths/files to ignore.
+  "cSpell.ignorePaths": [
+    "*.d.ts",
+    "*.json",
+    "**/*.svg",
+    "**/.vscode/**",
+    ".prettierrc",
+    "tsconfig.json",
+    "codegenApiTypes.ts",
+    "src/ant/**"
+  ],
+  "cSpell.words": [
+    "Abramov",
+    "accum",
+    "Aggs",
+    "axiomhq",
+    "codegen",
+    "ellipsize",
+    "hackernews",
+    "Ilya",
+    "Lesik",
+    "npmignore",
+    "slideout",
+    "sparkline",
+    "sparklines",
+    "timerange",
+    "Timeseries",
+    "Topk",
+    "uplot",
+    "xxxl"
+  ],
+}

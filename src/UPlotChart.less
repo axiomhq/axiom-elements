@@ -1,0 +1,147 @@
+// cSpell:ignore uplot
+@import './styles/theme.less';
+@import './styles/mixins.less';
+
+.root {
+  position: relative;
+}
+
+.legend {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0 10px;
+  font-family: @mono-font-family;
+  font-size: @text-size-xs;
+  color: @text-muted;
+  overflow-y: auto;
+}
+
+.series {
+  margin: 2px 5px;
+}
+
+.marker {
+  display: inline-block;
+  height: 12px;
+  width: 12px;
+  border-radius: 2px;
+  margin-right: 3px;
+}
+
+.text {
+  display: inline-block;
+}
+
+.chart {
+  position: relative;
+
+  width: 100%;
+
+  border-radius: @borders-radius;
+
+  &.has-title {
+    .legend {
+      top: 18px; // Keep in sync with UPlotChart TITLE_HEIGHT
+    }
+  }
+
+  &:not(.sparkline):hover {
+    z-index: 10; // Increase on hover so tooltips will appear on top of our siblings. Not for sparklines which don't have a tooltip
+  }
+}
+
+// 🐉🐉🐉
+// uplot sets `width: max-content` and it's not clear why, but it causes overflow
+// issues in Dashboards when the title is really long.
+// Hopefully overriding this doesn't cause new issues.
+:global(.uplot.uplot) {
+  width: auto;
+}
+
+:global(.u-title) {
+  .ellipsize();
+
+  font-size: @text-size-xs;
+  font-weight: @bold;
+  text-align: left;
+  color: @text-dark;
+  padding-left: 10px;
+  transform: translateY(6px); // As above
+}
+
+.chart:not(.sparkline) {
+  :global(.u-wrap) {
+    transform: translateX(12px); // UPlot favours left-hand-side too much
+  }
+}
+
+.tooltip {
+  border-radius: 5px;
+  box-shadow: 2px 2px 6px -4px #999;
+  cursor: default;
+  font-size: 14px;
+  opacity: 1;
+  top: 55px;
+  flex-direction: column;
+  overflow: hidden;
+  white-space: nowrap;
+
+  max-width: 50%; // Setting a max-width to try to prevent the tooltip from being cut off
+
+  pointer-events: none; // When the chart is not clicked/hovered turn off pointer events so that moving the mouse over it isn't perceived as leaving the chart
+  position: absolute;
+  display: none;
+  z-index: 110; // so that the tooltip renders on top of the cross hairs
+
+  border: 1px solid #e3e3e3;
+  background: rgba(255, 255, 255, 0.96);
+
+  & * {
+    font-family: inherit;
+  }
+}
+
+.active {
+  :global(.u-over) {
+    overflow: visible;
+  }
+
+  .tooltip {
+    display: block;
+  }
+}
+
+.pinned {
+  .tooltip {
+    // When the chart is clicked/focused accept pointer events so contents can be hovered
+    pointer-events: auto;
+  }
+
+  // When the tooltip is pinned hide the cross hairs and points because they no longer match up
+  :global(.u-cursor-pt),
+  :global(.u-cursor-x),
+  :global(.u-cursor-y) {
+    display: none;
+  }
+}
+
+.no-interval-data {
+  height: 100%;
+}
+
+.no-interval-data :global(.u-cursor-pt) {
+  display: none;
+}
+
+.uplot-chart-error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: #bf0e08;
+  font-size: 15px;
+  font-weight: 500;
+  height: 100%;
+}

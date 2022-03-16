@@ -1,0 +1,37 @@
+@import './styles/theme.less';
+
+.tooltip {
+  color: @text-muted;
+  min-width: 150px;
+  z-index: 99999;
+}
+
+.rows {
+  max-height: 550px; // Tall enough so max number of graphed rows/colors doesn't cause scrolling
+  overflow-y: auto;
+
+  // Add a top/bottom shadow to indicate scrolling
+  background: linear-gradient(180deg, white 0%, rgba(255, 255, 255, 0)),
+    linear-gradient(0deg, white 0%, rgba(255, 255, 255, 0)) 0% 100%,
+    radial-gradient(farthest-side at 50% 0%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)),
+    radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) 0% 100%;
+  background-repeat: no-repeat;
+  background-color: #fff;
+  background-size: 100% 100px, 100% 100px, 100% 14px, 100% 14px;
+  background-attachment: local, local, scroll, scroll;
+  background-color: @backgrounds-white;
+  border-bottom-left-radius: @borders-radius;
+  border-bottom-right-radius: @borders-radius;
+  padding: 0 @space-2 @space-2 @space-2;
+
+}
+
+.title {
+  font-size: 14px;
+  font-weight: @medium;
+  line-height: 1.2;
+  padding: @space-2 @space-2 @space-1 @space-2;
+  white-space: pre-wrap;
+  word-break: break-all;
+  word-wrap: break-word;
+}

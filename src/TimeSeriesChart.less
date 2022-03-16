@@ -1,0 +1,17 @@
+.root {
+  display: flex;
+  flex-direction: column;
+
+  background-color: #fff;
+  width: 100%;
+  height: 100%;
+}
+
+.results {
+  overflow-y: auto;
+}
+
+// Bit of a hack to reduce top padding.
+.name + :global(.axiom-SeriesCharts-root .axiom-SeriesCharts-chart) {
+  padding-top: 4px;
+}

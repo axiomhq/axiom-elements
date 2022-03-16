@@ -1,0 +1,42 @@
+@import './styles/theme.less';
+
+.root {
+  // Width and Height 100% needed for Dashboards.
+  width: 100%;
+  height: 100%;
+}
+
+.chart-wrapper,
+.chart {
+  height: 100%;
+}
+
+.dashboards {
+  .grouped-percentiles,
+  .top-k {
+    border-radius: 0;
+    padding: @space-2 10px;
+  }
+}
+
+.query-results {
+  .chart {
+    background-color: @backgrounds-white;
+    border-radius: @borders-radius;
+    padding: @space-4 0;
+  }
+
+  .chart-wrapper {
+    &.last-child {
+      padding-bottom: 0;
+    }
+  }
+}
+
+.line-highlighted {
+  opacity: 1;
+}
+
+.line-faded {
+  opacity: 0.2;
+}
