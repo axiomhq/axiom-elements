@@ -40,4 +40,5 @@ webpack.stamp
 # Project
 lib/
 
-types/
+# Exlude generated types folder
+/types
