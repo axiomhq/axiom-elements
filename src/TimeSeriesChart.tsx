@@ -9,7 +9,8 @@ import { Totals } from './Totals';
 
 import styles from './TimeSeriesChart.less';
 
-export interface TimeSeriesChartProps extends Omit<SeriesChartsProps, 'chartInfos' | 'groupId' | 'mode'> {
+export interface TimeSeriesChartProps
+  extends Omit<SeriesChartsProps, 'chartInfos' | 'groupId' | 'mode' | 'fieldValueFormatters'> {
   computedResults: ComputedQueryResults;
   name?: string;
   innerChartClassName?: string;
@@ -48,6 +49,7 @@ export class TimeSeriesChart extends React.Component<TimeSeriesChartProps, TimeS
       queryAggs,
       groups,
       aggregationSummaries,
+      fieldValueFormatters,
     } = computedResults;
 
     // Determine how many sections (charts and/or Totals) will be shown to figure out what percentage of the height each should get
@@ -70,6 +72,7 @@ export class TimeSeriesChart extends React.Component<TimeSeriesChartProps, TimeS
           groupId={groupId}
           chartClassName={innerChartClassName}
           chartInfos={chartInfos}
+          fieldValueFormatters={fieldValueFormatters}
           {...passthrough}
           style={{ height: `${numCharts * sectionPercent}%` }}
         />
@@ -84,8 +87,7 @@ export class TimeSeriesChart extends React.Component<TimeSeriesChartProps, TimeS
               groups={groups}
               order={order}
               setHighlightedSeries={this.onSetHighlightedSeries}
-              // TODO: enable once we can get unit and thus valueFormatter from query?
-              // fieldValueFormatters={fieldValueFormatters}
+              fieldValueFormatters={fieldValueFormatters}
             />
           </div>
         ) : null}

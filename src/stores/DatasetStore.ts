@@ -16,6 +16,7 @@ import startCase from 'lodash/startCase';
 import {
   Aggregation,
   APLRequestWithOptions,
+  DatasetField,
   EntryGroup,
   EntryGroupAgg,
   Filter as ApiFilter,
@@ -29,6 +30,7 @@ import { generateColorContrast, generateColorLinear, THEMES } from '../util/colo
 import { hashCode } from '../util/hashCode';
 import { isNumeric } from '../util/numbers';
 import { orderedStringify } from '../util/objects';
+import { getValueFormat, ShortValueFormat } from '../util/units/units';
 import { ValueFormatter } from '../util/units/valueFormats';
 
 export const isAplQueryRequest = (
@@ -59,6 +61,14 @@ export const formatAggregationChartTitle = (queryAgg: Aggregation) => {
   const prettyOp = startCase(`${op}`);
 
   return field ? `${prettyOp}(${field})` : prettyOp;
+};
+
+export const isNumberType = (type?: string): boolean => {
+  return (
+    type !== undefined &&
+    type.length > 0 &&
+    type.split('|').filter((t) => t !== 'float' && t !== 'integer').length === 0
+  );
 };
 
 export type Severity = 'info' | 'warn' | 'error';
@@ -141,6 +151,7 @@ export type KeyCountValues = {
 
 export interface TopkChartInfo extends AggregationChartInfo {
   groups: string[]; // Order of groups to render data
+  groupKeyToGroup: { [groupKey: string]: { [field: string]: any } };
   groupColors: { [key: number]: string };
   groupValues: {
     [groupKey: string]: undefined | KeyCountValues[];
@@ -190,6 +201,7 @@ export interface ComputedQueryResults {
   status: Status;
   totals: TotalInfo[];
   queryOptions?: { [key: string]: any };
+  fieldValueFormatters?: FieldValueFormatters;
 }
 
 export interface EntryRow {
@@ -207,6 +219,7 @@ export interface QueryResult {
   matches: EntryRow[];
   status: Status;
   query: QueryRequest;
+  fieldsMeta?: Array<DatasetField>;
 }
 
 export interface Filter extends Omit<ApiFilter, 'op' | 'children'> {
@@ -266,6 +279,24 @@ export function formatAggregationHeader(queryAgg: Aggregation) {
   return field ? `${prettyOp}(${field})` : prettyOp;
 }
 
+export function fieldsMetaToFieldValueFormatters(fieldsMeta: DatasetField[] | undefined) {
+  let fieldValueFormatters: FieldValueFormatters | undefined;
+
+  fieldsMeta?.forEach((field) => {
+    if (!fieldValueFormatters) {
+      fieldValueFormatters = {};
+    }
+
+    const { name, type, unit } = field;
+
+    if (isNumberType(type)) {
+      fieldValueFormatters[name] = getValueFormat(unit)?.fn || ShortValueFormat.fn; // ShortValueFormat is the default for numbers
+    }
+  });
+
+  return fieldValueFormatters;
+}
+
 function computeQueryResults(
   results: QueryResult[], // NOTE: this is an array of QueryResult. It contains the primary query and if specified the "against query".
   lastRun: Date,
@@ -295,8 +326,8 @@ function computeQueryResults(
   const allQueryResultsTotals = results.map((r) => r.buckets.totals ?? []);
   const allQueryResultsSeries = results.map((r) => r.buckets.series ?? []);
 
-  const rows = getTotalsRows(allQueryResultsTotals, queryAggs);
-  const topGroups = getTopResultsGroups(results);
+  const rows = getTotalsRows(allQueryResultsTotals, queryAggs, groupBy);
+  const topGroups = getTopResultsGroups(results, groupBy);
 
   // Pass queryHash as hash code for the empty group so there's color variation but continuity across page loads
   const colors = calculateColors(topGroups, queryHash);
@@ -317,6 +348,12 @@ function computeQueryResults(
 
   const matches = results[0].matches;
 
+  const fieldValueFormatters: FieldValueFormatters = {};
+
+  results.forEach((result) => {
+    Object.assign(fieldValueFormatters, fieldsMetaToFieldValueFormatters(result.fieldsMeta));
+  });
+
   return {
     queryAggs: queryAggs,
     aggregationCharts: charts,
@@ -335,16 +372,24 @@ function computeQueryResults(
     status: results[0].status,
     lastRun: lastRun,
     queryOptions: queryOptions,
+    fieldValueFormatters: fieldValueFormatters,
   };
 }
 
-function getEntryGroupKey(group: EntryGroup) {
-  return Object.values(group.group)
-    .map((value) => (typeof value === 'string' || typeof value === 'number' ? value : JSON.stringify(value)))
+function getEntryGroupKey(
+  group: EntryGroup,
+  // not using ? for arg to ensure query groupBy is passed
+  groupBy: string[] | undefined
+) {
+  const sortedKeys = groupBy ? groupBy : Object.keys(group.group).sort();
+
+  return sortedKeys
+    .map((key) => group.group[key])
+    .map((value) => (typeof value === 'string' || typeof value === 'number' ? value : orderedStringify(value)))
     .join(', '); // An empty string can be a key
 }
 
-function getTopResultsGroups(results: QueryResult[]): string[] {
+function getTopResultsGroups(results: QueryResult[], groupBy?: string[]): string[] {
   // FIX: this is pretty naive and I'm sure there's a better way to choose what groups are "top"
   return (
     flatten(
@@ -357,7 +402,7 @@ function getTopResultsGroups(results: QueryResult[]): string[] {
         )
     )
       // Generate the key
-      .map(getEntryGroupKey)
+      .map((entryGroup) => getEntryGroupKey(entryGroup, groupBy))
   );
 }
 
@@ -418,7 +463,7 @@ function calculateColors(groupKeys: string[], emptyGroupHash?: number): ChartCol
 /**
  * Calculate a data structure that can be rendered by a table where a row represents a group and aggregation cells display values from multiple queries
  */
-function getTotalsRows(lagTotals: EntryGroup[][], queryAggs: Aggregation[]) {
+function getTotalsRows(lagTotals: EntryGroup[][], queryAggs: Aggregation[], groupBy: string[] | undefined) {
   // This will hold the aggregation totals values over time, e.g. { count: <info about 'count' totals over multiple queries>}
   const totalsAcrossQueries: { [key: string]: TotalInfo } = {};
 
@@ -438,7 +483,7 @@ function getTotalsRows(lagTotals: EntryGroup[][], queryAggs: Aggregation[]) {
       entryGroup = entryGroups[entryGroupIdx];
 
       // Key to retrieve or create list to hold row values which may not be present in all queries
-      const key = getEntryGroupKey(entryGroup);
+      const key = getEntryGroupKey(entryGroup, groupBy);
 
       // Get or create the structure to hold the row info
       let row = totalsAcrossQueries[key];
@@ -590,6 +635,7 @@ interface TotalsParams {
   queryCount: number;
   queryIdx: number;
   value: any;
+  groupBy?: string[];
 }
 
 // Params passed to a function that processes accumulated data from totals
@@ -616,6 +662,7 @@ interface IntervalsParams {
   queryOptions?: { [key: string]: string };
   intervalIdx: number;
   intervalCount: number;
+  groupBy?: string[];
 }
 
 // Params passed to a function that processes accumulated data from intervals
@@ -629,6 +676,7 @@ interface IntervalsResultParams {
 
 interface TopkChartAccumulator extends Accumulator {
   groups: string[]; // Order of groups to render data
+  groupKeyToGroup: { [groupKey: string]: { [field: string]: any } };
   groupColors: { [key: number]: string };
   groupValues: {
     [groupKey: string]: undefined | KeyCountValues[];
@@ -660,7 +708,7 @@ const MAX_HEATMAP_BUCKETS = 50;
 
 // Function to append an iteration's data to an overall accumulator of data
 function accumulateSpectrograph(params: TotalsParams): SpectrographAccumulator {
-  const { value, entryGroup, queryCount } = params;
+  const { value, entryGroup, queryCount, groupBy } = params;
   const accumulator: SpectrographAccumulator = params.accumulator
     ? (params.accumulator as SpectrographAccumulator)
     : { min: undefined, max: undefined, empty: true, groupsToValues: {} };
@@ -669,7 +717,7 @@ function accumulateSpectrograph(params: TotalsParams): SpectrographAccumulator {
     const trimmedValue = value.slice(0, MAX_HEATMAP_BUCKETS);
 
     const { groupsToValues } = accumulator;
-    const groupKey = getEntryGroupKey(entryGroup);
+    const groupKey = getEntryGroupKey(entryGroup, groupBy);
 
     if (!groupsToValues[groupKey]) {
       groupsToValues[groupKey] = new Array(queryCount).fill(null);
@@ -706,7 +754,7 @@ function summarizeSpectrograph({ accumulator, summaries, aggIdx, queryAgg }: Tot
 }
 
 function accumulateHeatMap(params: IntervalsParams): HeatMapAccumulator | undefined {
-  const { aggIdx, interval, intervalCount, intervalIdx, queryAgg, queryIdx } = params;
+  const { aggIdx, interval, intervalCount, intervalIdx, queryAgg, queryIdx, groupBy } = params;
 
   if (typeof queryAgg.argument !== 'number') {
     return undefined;
@@ -744,7 +792,7 @@ function accumulateHeatMap(params: IntervalsParams): HeatMapAccumulator | undefi
 
     if (interval.groups) {
       interval.groups.forEach((g) => {
-        const entryGroupKey = getEntryGroupKey(g);
+        const entryGroupKey = getEntryGroupKey(g, groupBy);
 
         const matchedAgg = (g.aggregations || [])[aggIdx];
 
@@ -842,6 +890,7 @@ function accumulateLineChart(params: IntervalsParams): LineChartAccumulator | un
     queryOptions,
     queryCount,
     queryIdx,
+    groupBy,
   } = params;
 
   const displayNull = queryOptions?.displayNull;
@@ -871,7 +920,7 @@ function accumulateLineChart(params: IntervalsParams): LineChartAccumulator | un
         accumulator.empty = false;
       }
 
-      const groupKey = getEntryGroupKey(entryGroup);
+      const groupKey = getEntryGroupKey(entryGroup, groupBy);
       if (!graphedGroupColors[groupKey]) {
         // Group should not be graphed
         return;
@@ -1052,18 +1101,19 @@ function chartPercentiles({ accumulator, queryAgg, charts, intervalCount }: Inte
 }
 
 function accumulateTopkChart(params: TotalsParams): TopkChartAccumulator {
-  const { value, entryGroup, graphedGroupColors, queryIdx, queryCount } = params;
+  const { value, entryGroup, graphedGroupColors, queryIdx, queryCount, groupBy } = params;
   const accumulator: TopkChartAccumulator = params.accumulator
     ? (params.accumulator as TopkChartAccumulator)
-    : { groups: [], groupValues: {}, groupColors: {}, empty: true, maxCountValue: 0 };
+    : { groups: [], groupValues: {}, groupColors: {}, empty: true, maxCountValue: 0, groupKeyToGroup: {} };
 
   if (Array.isArray(value)) {
-    const { groups, groupColors, groupValues } = accumulator;
-    const groupKey = getEntryGroupKey(entryGroup);
+    const { groups, groupColors, groupValues, groupKeyToGroup } = accumulator;
+    const groupKey = getEntryGroupKey(entryGroup, groupBy);
 
     // Group might already be in the list since we're iterating over multiple query responses
     if (!groups.includes(groupKey)) {
       groups.push(groupKey);
+      groupKeyToGroup[groupKey] = entryGroup.group;
     }
 
     groupColors[groupKey] = graphedGroupColors[groupKey]?.light || '#f0f2f5'; // backgrounds-darker
@@ -1113,7 +1163,8 @@ function chartTopkChart({ accumulator, queryAgg, charts, queryCount, groupBy, in
     return;
   }
 
-  const { groups, groupColors, groupValues, empty, maxCountValue } = accumulator as TopkChartAccumulator;
+  const { groups, groupColors, groupValues, empty, maxCountValue, groupKeyToGroup } =
+    accumulator as TopkChartAccumulator;
 
   Object.keys(groupValues).forEach((group) => {
     groupValues[group]?.sort((a, b) => {
@@ -1132,6 +1183,7 @@ function chartTopkChart({ accumulator, queryAgg, charts, queryCount, groupBy, in
     groupValues: groupValues,
     groupColors: groupColors,
     groups: groups,
+    groupKeyToGroup: groupKeyToGroup,
     empty: empty || intervalCount < 2, // charts with one interval are considered empty
     // This chart needs to have first-hand knowledge that an against query was performed
     hasAgainst: queryCount > 1,
@@ -1154,6 +1206,7 @@ function accumulateGroupedPercentiles(params: IntervalsParams): any | undefined 
     queryIdx,
     graphedGroupColors,
     queryOptions,
+    groupBy,
   } = params;
 
   const { argument } = queryAgg;
@@ -1195,7 +1248,7 @@ function accumulateGroupedPercentiles(params: IntervalsParams): any | undefined 
       // Track whether the chart is no longer empty
       accumulator.empty = false;
 
-      const key = getEntryGroupKey(entryGroup);
+      const key = getEntryGroupKey(entryGroup, groupBy);
       if (!graphedGroupColors[key]) {
         // Group should not be graphed
         return;
@@ -1345,6 +1398,7 @@ function calculateVisualizations(
             queryCount: allQueryResultsTotals.length,
             queryIdx: lagIdx,
             value: entryGroup.aggregations && entryGroup.aggregations[aggIdx].value,
+            groupBy: groupBy,
           });
         }
       });
@@ -1369,6 +1423,7 @@ function calculateVisualizations(
               intervalIdx: intervalIdx,
               intervalCount: intervalCount,
               queryOptions: queryOptions,
+              groupBy: groupBy,
             }) || intervalsAccumulators[aggIdx];
         }
       });

@@ -90,7 +90,7 @@ export class TotalsRow extends React.Component<TotalsRowProps> {
               valueNode = (
                 <span>
                   <span className={styles.topkKey}>
-                    <Tooltip placement="bottomLeft" overlay={formattedKey}>
+                    <Tooltip placement="auto-start" content={formattedKey}>
                       {formattedKey}
                     </Tooltip>
                   </span>

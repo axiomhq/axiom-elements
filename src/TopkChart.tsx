@@ -1,19 +1,23 @@
+import Tippy from '@tippyjs/react';
 import classNames from 'classnames';
+import copy from 'copy-to-clipboard';
 import flatten from 'lodash/flatten';
 import React from 'react';
-import CopyToClipboard from 'react-copy-to-clipboard';
 
 import { AxiomContext } from './AxiomContext';
 import { TopkChartInfo } from './stores/DatasetStore';
-import { Tooltip } from './Tooltip';
 import { formatNumber } from './util/numbers';
 
 import styles from './TopkChart.less';
+
+export type RenderTopkAction = (group: { [field: string]: any }) => React.ReactNode;
 
 export interface TopkChartProps {
   groupId: string;
   chartInfo: TopkChartInfo;
   className?: string;
+  renderKeyAction?: RenderTopkAction;
+  renderGroupAction?: RenderTopkAction;
 }
 
 export class TopkChart extends React.Component<TopkChartProps> {
@@ -22,9 +26,19 @@ export class TopkChart extends React.Component<TopkChartProps> {
 
   render() {
     const { localizedMessages } = this.context;
-    const { className } = this.props;
-    const { groups, groupValues, aggregation, hasAgainst, hasGroups, maxCountValue, groupColors, empty, title } =
-      this.props.chartInfo;
+    const { className, renderKeyAction, renderGroupAction } = this.props;
+    const {
+      groups,
+      groupValues,
+      aggregation,
+      hasAgainst,
+      hasGroups,
+      maxCountValue,
+      groupColors,
+      empty,
+      title,
+      groupKeyToGroup,
+    } = this.props.chartInfo;
 
     const countWidth = Math.max(
       formatNumber(maxCountValue).length * 9.78 + 5, // 'M' width for 11px mono font + 5px
@@ -76,8 +90,8 @@ export class TopkChart extends React.Component<TopkChartProps> {
                       hasGroups && valuesIdx === 0 ? (
                         <tr key={group}>
                           <td colSpan={hasAgainst ? 3 : 2} className={styles.groupCell}>
-                            <div className={styles.copyWrapper}>
-                              <Tooltip placement="bottomLeft" overlay={group}>
+                            <div className={styles.cellWrapper}>
+                              <Tippy placement="auto-start" content={group} maxWidth="30rem">
                                 <div
                                   className={classNames(styles.group)}
                                   // Using data-title to prevent double tooltips
@@ -85,10 +99,15 @@ export class TopkChart extends React.Component<TopkChartProps> {
                                 >
                                   {group}
                                 </div>
-                              </Tooltip>
-                              <CopyToClipboard text={group}>
-                                <button className={styles.copy}>{localizedMessages.copy}</button>
-                              </CopyToClipboard>
+                              </Tippy>
+                              <div className={styles.actions}>
+                                {renderGroupAction && groupKeyToGroup[group]
+                                  ? renderGroupAction(groupKeyToGroup[group])
+                                  : null}
+                                <Tippy placement="bottom" content={localizedMessages.copy}>
+                                  <button className={styles.copy} onClick={this.onClickAndCopy.bind(this, group)} />
+                                </Tippy>
+                              </div>
                             </div>
                           </td>
                         </tr>
@@ -112,8 +131,8 @@ export class TopkChart extends React.Component<TopkChartProps> {
                           maxBarWidth: maxBarWidth,
                         })}
                         <td className={styles.keyCell}>
-                          <div className={styles.copyWrapper}>
-                            <Tooltip placement="bottomLeft" overlay={key}>
+                          <div className={styles.cellWrapper}>
+                            <Tippy placement="auto-start" content={key} maxWidth="30rem">
                               <div
                                 className={classNames(styles.key)}
                                 // Using data-title to prevent double tooltips
@@ -121,10 +140,13 @@ export class TopkChart extends React.Component<TopkChartProps> {
                               >
                                 {key}
                               </div>
-                            </Tooltip>
-                            <CopyToClipboard text={key}>
-                              <button className={styles.copy}>{localizedMessages.copy}</button>
-                            </CopyToClipboard>
+                            </Tippy>
+                            <div className={styles.actions}>
+                              {renderKeyAction ? renderKeyAction({ [aggregation.field]: key }) : null}
+                              <Tippy placement="bottom" content={localizedMessages.copy}>
+                                <button className={styles.copy} onClick={this.onClickAndCopy.bind(this, key)} />
+                              </Tippy>
+                            </div>
                           </div>
                         </td>
                       </tr>,
@@ -171,5 +193,13 @@ export class TopkChart extends React.Component<TopkChartProps> {
         </div>
       </td>
     );
+  };
+
+  // Using this handler instead of react-copy-to-clipboard because Tippy can't be within ReactCopyToClipboard (doesn't pass onClick) and the reverse also fails
+  onClickAndCopy = (text: string, e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    copy(text);
   };
 }

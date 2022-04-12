@@ -20,7 +20,7 @@
 }
 
 .root-header-adjust {
-  padding-bottom: 40px; // Match the height of ChartHeader.
+  padding-bottom: 20px; // Some padding to vertically center the text between the line chart and header, although not entirely
 }
 
 .chart {
@@ -61,6 +61,10 @@
   width: 90%;
   max-height: 100%;
   overflow: hidden;
+  // prevent the text from shrinking until invisible
+  position: relative;
+  z-index: 10;
+  min-height: 24px;
 }
 
 .textInner {

@@ -131,7 +131,7 @@ TimeSeriesTable.args = {
     endTime: '2021-12-02T22:35:41.000Z',
     apl: `
 ['sample-http-logs']
-| summarize count() by bin_auto(_time)
+| summarize count() by bin_auto(_time), ['geo.city']
 `,
   },
 } as ChartProps;
@@ -187,9 +187,11 @@ HeatMap.args = {
         argument: 15,
       },
     ],
+    groupBy: ['geo.city'],
     limit: 20,
     resolution: '15s',
   },
+  showResultsTable: true,
 } as ChartProps;
 
 export const PercentilesMap = TimeSeriesTemplate.bind({});
@@ -221,11 +223,12 @@ TopK.args = {
     aggregations: [
       {
         op: 'topk',
-        field: 'geo.city',
+        field: 'content_type',
         argument: 10,
       },
     ],
     resolution: '15s',
+    groupBy: ['geo.city'],
   },
 } as ChartProps;
 

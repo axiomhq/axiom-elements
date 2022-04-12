@@ -139,8 +139,6 @@ export const Chart: React.FC<ChartProps> = ({
               // TODO: add highlightedSeries support?
               // highlightedSeries={highlightedSeries}
               spanGaps={nullValues === 'span' || nullValues === 'auto'}
-              // TODO: enable once we can get unit and thus valueFormatter from query?
-              // fieldValueFormatters={fieldValueFormatters}
               showResultsTable={showResultsTable}
             />
           );

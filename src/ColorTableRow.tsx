@@ -1,8 +1,8 @@
+import Tippy from '@tippyjs/react';
 import classNames from 'classnames';
 import React from 'react';
 
 import { QueryValues } from './QueryValues';
-import { Tooltip } from './Tooltip';
 
 import styles from './ColorTableRow.less';
 
@@ -25,11 +25,11 @@ export const ColorTableRow: React.FC<ColorTableRowProps> = (props) => {
     >
       <td className={styles.color} style={{ backgroundColor: color }}></td>
       <td className={styles.seriesName}>
-        <Tooltip placement="bottomLeft" overlay={name}>
+        <Tippy placement="bottom-start" content={name}>
           <div className={styles.oneLine} data-title={name}>
             {name}
           </div>
-        </Tooltip>
+        </Tippy>
       </td>
       <td className={styles.value}>
         <QueryValues values={values} />

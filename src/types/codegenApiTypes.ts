@@ -7,10 +7,6 @@
 
 export interface APLRequestWithOptions {
   apl: string;
-  /**
-   * DatasetMap is an optional mapping used to replace dataset names in the query.
-   */
-  datasetMap?: { [key: string]: string };
   endTime?: string;
   queryOptions?: QueryOptions;
   startTime?: string;
@@ -34,15 +30,16 @@ export namespace Aggregation {
     Histogram = <any>'histogram',
     Stdev = <any>'stdev',
     Variance = <any>'variance',
+    Argmin = <any>'argmin',
+    Argmax = <any>'argmax',
   }
 }
 export interface AplQuery {
   apl: string;
-  /**
-   * DatasetMap is an optional mapping used to replace dataset names in the query.
-   */
-  datasetMap?: { [key: string]: string };
   endTime?: string;
+  /**
+   * start and end time for the query, these must be specified as RFC3339 strings or using relative time expressions (e.g. now-1h, now-1d, now-1w, etc)
+   */
   startTime?: string;
 }
 export interface AplResult {
@@ -389,6 +386,10 @@ export interface IntegrationQuery {
   continuationToken?: string;
   cursor?: string;
   endTime: string;
+  /**
+   * FieldsMeta contains the unit information (if we have it) for each field
+   */
+  fieldsMeta?: Array<DatasetField>;
   filter?: Filter;
   groupBy?: Array<string>;
   includeCursor?: boolean;
@@ -400,6 +401,9 @@ export interface IntegrationQuery {
    * The time resolution of the query’s graph, in seconds. Valid values are the query’s time range /100 at maximum and /1000 at minimum or \"auto\".
    */
   resolution: string;
+  /**
+   * start and end time for the query, these must be specified as RFC3339 strings or using relative time expressions (e.g. now-1h, now-1d, now-1w, etc)
+   */
   startTime: string;
   virtualFields?: Array<VirtualColumn>;
 }
@@ -614,6 +618,10 @@ export interface QueryRequest {
   continuationToken?: string;
   cursor?: string;
   endTime: string;
+  /**
+   * FieldsMeta contains the unit information (if we have it) for each field
+   */
+  fieldsMeta?: Array<DatasetField>;
   filter?: Filter;
   groupBy?: Array<string>;
   includeCursor?: boolean;
@@ -624,6 +632,9 @@ export interface QueryRequest {
    * The time resolution of the query’s graph, in seconds. Valid values are the query’s time range /100 at maximum and /1000 at minimum or \"auto\".
    */
   resolution: string;
+  /**
+   * start and end time for the query, these must be specified as RFC3339 strings or using relative time expressions (e.g. now-1h, now-1d, now-1w, etc)
+   */
   startTime: string;
   virtualFields?: Array<VirtualColumn>;
 }

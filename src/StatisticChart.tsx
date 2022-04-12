@@ -3,7 +3,7 @@ import isEqual from 'lodash/isEqual';
 import React from 'react';
 
 import { MetricBase } from './MetricBase';
-import { ComputedQueryResults, DatasetFieldValueFormatters } from './stores/DatasetStore';
+import { ComputedQueryResults } from './stores/DatasetStore';
 import { ChartColorScheme } from './util/color-schemes';
 import { formatNumber } from './util/numbers';
 import { ValueFormatter } from './util/units/valueFormats';
@@ -34,7 +34,6 @@ export interface StatisticChartProps {
 
   className?: string;
   loading?: boolean;
-  datasetFieldValueFormatters?: DatasetFieldValueFormatters;
   renderMenu?(): React.ReactNode;
 }
 
@@ -59,7 +58,6 @@ export class StatisticChart extends React.Component<StatisticChartProps> {
       name,
       renderMenu,
       showChart,
-      datasetFieldValueFormatters,
     } = this.props;
 
     if (
@@ -95,11 +93,9 @@ export class StatisticChart extends React.Component<StatisticChartProps> {
         }
       }
 
-      const fieldValueFormatters = computedResults?.datasetId
-        ? datasetFieldValueFormatters?.[computedResults?.datasetId]
-        : undefined;
-
       const chartInfo = computedResults?.aggregationCharts[0];
+
+      const fieldValueFormatters = computedResults?.fieldValueFormatters;
 
       let valueFormatter: ValueFormatter | undefined;
 

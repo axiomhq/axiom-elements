@@ -78,7 +78,7 @@
       }
     }
 
-    .copy {
+    .actions {
       visibility: visible;
     }
   }
@@ -151,47 +151,64 @@ tr:not(:first-child) .group-cell {
 }
 
 // wrapper so we can position the copy button
-.copy-wrapper {
+.cell-wrapper {
   position: relative;
 }
 
-.copy {
+.actions {
   visibility: hidden;
   position: absolute;
   // Center the button in the row
   right: 2px;
   top: 0px;
   transition-duration: 0s; // So that the button isn't fading out with the text showing beneath it
+}
 
-  //////////////////////////////////////////////////////////
-  // `Button` styles from `axiom` proper
-  // (grouped by class in `axiom` proper)
-  margin: 0;
+.actions {
+  button,
+  a {
+    //////////////////////////////////////////////////////////
+    // `Button` styles from `axiom` proper
+    // (grouped by class in `axiom` proper)
+    margin: 0 0 0 @space-1; // left margin added to space out actions
 
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-  line-height: 1;
-  text-align: center;
-  // transition: all 200ms linear;
-  vertical-align: middle;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    line-height: 1;
+    text-align: center;
+    // transition: all 200ms linear;
+    vertical-align: middle;
 
-  font-size: 12px;
-  min-height: 18px;
-  padding: 2px 6px;
-  text-transform: uppercase;
-  color: @blue-base;
-  background: transparent;
-  border: 1px solid transparent;
+    font-size: 12px;
+    min-height: 18px;
+    padding: 2px 6px;
+    text-transform: uppercase;
+    color: @blue-base;
+    background: transparent;
+    border: 1px solid transparent;
 
-  &:hover {
-    background: #c5ddf3;
-    border: 1px solid #c5ddf3;
-    text-decoration: none;
+    &:hover {
+      background: #c5ddf3;
+      border: 1px solid #c5ddf3;
+      text-decoration: none;
+    }
+  }
+}
+
+.copy.copy {
+  &:before {
+    content: '';
+    display: block;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3C!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --%3E%3Cpath d='M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z' fill='%231070CA'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    width: 12px;
+    height: 12px;
+    float: left;
   }
 }
 
@@ -199,7 +216,8 @@ tr:not(:first-child) .group-cell {
   &:before {
     content: '';
     display: block;
-    background: url('/static/media/history.svg') no-repeat;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M31.5 15.97c.016 8.54-6.949 15.524-15.489 15.53-4 .003-7.648-1.51-10.4-3.996a.75.75 0 01-.027-1.088l1.06-1.06a.753.753 0 011.034-.025A12.456 12.456 0 0016 28.5c6.91 0 12.5-5.592 12.5-12.5 0-6.91-5.592-12.5-12.5-12.5-3.47 0-6.607 1.41-8.87 3.69l3.068 3.026a.75.75 0 01-.527 1.284h-8.02a.75.75 0 01-.75-.75V2.84a.75.75 0 011.276-.534l2.819 2.78A15.45 15.45 0 0116 .5c8.55 0 15.484 6.924 15.5 15.47zm-10.441 5.637l.882-1.213a.75.75 0 00-.165-1.048l-4.276-3.11V7.25a.75.75 0 00-.75-.75h-1.5a.75.75 0 00-.75.75v10.514l5.511 4.008a.75.75 0 001.048-.165z' fill='%2366788A'/%3E%3C/svg%3E")
+      no-repeat;
     width: 12px;
     height: 12px;
     float: left;

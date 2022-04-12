@@ -14,11 +14,10 @@ import {
   PercentilesChartInfo,
   TopkChartInfo,
 } from './stores/DatasetStore';
-import { TopkChart } from './TopkChart';
+import { RenderTopkAction, TopkChart } from './TopkChart';
 import { LABEL_AXES_STYLE } from './UPlotChart';
 
 import styles from './SeriesCharts.less';
-
 export interface SeriesChartsState {
   syncedLabelChartHeight?: number;
 }
@@ -33,6 +32,8 @@ export interface SeriesChartsProps
   mode: 'dashboards' | 'query-results';
   style?: React.CSSProperties;
   fieldValueFormatters?: FieldValueFormatters;
+  renderTopkKeyAction?: RenderTopkAction;
+  renderTopkGroupAction?: RenderTopkAction;
 }
 
 export class SeriesCharts extends React.Component<SeriesChartsProps, SeriesChartsState> {
@@ -56,6 +57,8 @@ export class SeriesCharts extends React.Component<SeriesChartsProps, SeriesChart
       spanGaps,
       style,
       fieldValueFormatters,
+      renderTopkKeyAction,
+      renderTopkGroupAction,
     } = this.props;
     if (!chartInfos.length) {
       return null;
@@ -169,6 +172,8 @@ export class SeriesCharts extends React.Component<SeriesChartsProps, SeriesChart
                     groupId={groupId}
                     chartInfo={chartInfo as TopkChartInfo}
                     className={classNames(styles.topK, chartClassName)}
+                    renderKeyAction={renderTopkKeyAction}
+                    renderGroupAction={renderTopkGroupAction}
                   />
                 );
                 break;
