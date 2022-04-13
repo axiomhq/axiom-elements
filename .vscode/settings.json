@@ -4,7 +4,8 @@
     "**/.DS_Store": true,
     "**/._.DS_Store": true,
     "node_modules": true,
-    // "dist": true,
+    "dist": true, // Build output
+    "Types": true, // Built types
     ".cache-loader": true,
     "demo": true, // this is its own project and it's recommended to open in a separate editor
   },
@@ -50,6 +51,8 @@
     "axiomhq",
     "codegen",
     "ellipsize",
+    "fontawesome",
+    "Fonticons",
     "hackernews",
     "Ilya",
     "Lesik",
@@ -59,6 +62,7 @@
     "sparklines",
     "timerange",
     "Timeseries",
+    "tippyjs",
     "Topk",
     "uplot",
     "xxxl"

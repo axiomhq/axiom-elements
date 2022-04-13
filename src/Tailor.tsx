@@ -136,9 +136,9 @@ export class Tailor extends React.Component<TailorProps, TailorState> {
     return (
       <ReactResizeDetector<HTMLDivElement>
         handleWidth
-        // handleHeight
-        // refreshMode="debounce"
-        // refreshRate={0}
+        handleHeight
+        refreshMode="debounce"
+        refreshRate={0}
         onResize={this.onResize}
       >
         {({ targetRef }) => (

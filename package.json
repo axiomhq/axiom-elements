@@ -1,7 +1,7 @@
 {
   "name": "@axiomhq/axiom-elements",
   "description": "",
-  "version": "1.0.0-alpha.16",
+  "version": "1.0.0-alpha.20",
   "author": "Axiom, Inc.",
   "license": "MIT",
   "main": "./dist/axiom-elements.js",

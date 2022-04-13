@@ -1,3 +1,5 @@
+// cSpell:ignore Csvg Cpath
+
 @import './styles/theme.less';
 @import './styles/mixins.less';
 
@@ -43,7 +45,9 @@
   text-align: center;
 }
 
-.table {
+// Triple the className to give more specificity so it's harder for the sites
+// elements is embedded in to override the table styles.
+.table.table.table {
   border-spacing: 0;
   border-collapse: collapse;
   width: 100%;
@@ -53,6 +57,7 @@
 
   td {
     padding: 0;
+    vertical-align: middle;
 
     // borders
     border-top: 1px solid @borders-default;
@@ -109,16 +114,16 @@
   padding: @space-1 @space-2;
 }
 
-.group-cell.group-cell {
+.group-cell.group-cell.group-cell.group-cell {
   padding: @space-2;
 }
 
 // Group rows after the first one have a wide top border
-tr:not(:first-child) .group-cell {
+tr:not(:first-child) .group-cell.group-cell.group-cell {
   border-top: 4px solid @borders-muted;
 }
 
-.key-cell.key-cell {
+.key-cell.key-cell.key-cell.key-cell {
   padding: 0 @space-2;
 }
 
@@ -164,7 +169,7 @@ tr:not(:first-child) .group-cell {
   transition-duration: 0s; // So that the button isn't fading out with the text showing beneath it
 }
 
-.actions {
+.actions.actions.actions {
   button,
   a {
     //////////////////////////////////////////////////////////

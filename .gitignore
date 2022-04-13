@@ -40,5 +40,7 @@ webpack.stamp
 # Project
 lib/
 
-# Exlude generated types folder
-/types
+types/
+
+# Add back vscode folder
+!/.vscode/

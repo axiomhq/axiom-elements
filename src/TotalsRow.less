@@ -1,7 +1,9 @@
 @import './styles/theme.less';
 @import './styles/mixins.less';
 
-.row {
+// Triple the className to give more specificity so it's harder for the sites
+// elements is embedded in to override the table styles.
+.row.row.row {
   border-bottom: 1px solid @borders-default;
   font-family: @mono-font-family;
   font-size: @text-size-sm;
@@ -24,6 +26,9 @@
     padding: @space-2 @space-2;
     white-space: nowrap;
     border-right: 1px solid @borders-default;
+    // Default styles, but needed to prevent other sites from overriding.
+    line-height: normal;
+    vertical-align: middle;
 
     &:last-child {
       border-right: none;
@@ -31,12 +36,12 @@
   }
 }
 
-.group {
+.group.group.group.group {
   .ellipsize();
   max-width: 40ch;
 }
 
-.end-group.end-group {
+.end-group.end-group.end-group.end-group {
   border-right-width: 4px;
 }
 
